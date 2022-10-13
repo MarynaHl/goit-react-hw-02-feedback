@@ -1,49 +1,57 @@
-import { Component } from 'react';
-import { nanoid } from 'nanoid';
-import { Notify } from 'notiflix';
+import React, { Component } from 'react';
+import s from './App.module.css';
 import Section from './Section';
-import ContactForm from './ContactForm';
-import Contacts from './Contacts';
+import FeedbackOptions from './FeedbackOptions';
+import Notification from './Notification';
+import Statistics from './Statistics';
 
-export default class App extends Component {
+class App extends Component {
   state = {
-    contacts: [],
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
-  onGetDataForm = (data) => {
-    const hasName = this.state.contacts.some(it => it.name === data.name);
-    if (hasName) {
-      Notify.warning(`Contact "${data.name}" is already exist.`);
-      return;
-    }
+  countTotalFeedback = () => {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  };
 
-    this.setState(p => ({
-      contacts: [...p.contacts, { ...data, id: nanoid() }]
-    }))
-  }
+  countPositiveFeedbackPercentage = () => {
+    return Math.round(this.state.good / this.countTotalFeedback() * 100);
+  };
 
-  deleteItem = (deletedId) => {
-    this.setState(p => ({
-      contacts: p.contacts.filter(({id}) => id !== deletedId)
-    }))
-  }
+  onLeaveFeedback = (feedbackType) => {
+    this.setState(prev => ({ [feedbackType]: prev[feedbackType] + 1 }));
+  };
 
   render() {
-    const {contacts} = this.state;
+    const {good, neutral, bad} = this.state;
+    const total = this.countTotalFeedback();
+
     return (
-      <div>
-        <Section title='Phonebook'>
-          <ContactForm
-            onSubmit={this.onGetDataForm}
+      <div className={s.container}>
+        <Section title='Please leave feedback'>
+          <FeedbackOptions
+            options={this.state}
+            onLeaveFeedback={this.onLeaveFeedback}
           />
         </Section>
-        <Section title='Contacts'>
-          <Contacts
-            contacts={contacts}
-            onClickDelete={this.deleteItem}
-          />
+
+        <Section title='Statistics'>
+          {!total
+            ? <Notification message='There is no feedback'/>
+            : <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={this.countTotalFeedback()}
+              positivePercentage={this.countPositiveFeedbackPercentage()}
+            />}
         </Section>
       </div>
     );
   }
 }
+
+export default App;

@@ -1,57 +1,49 @@
-import React, { Component } from 'react';
-import s from './App.module.css';
+import { Component } from 'react';
+import { nanoid } from 'nanoid';
+import { Notify } from 'notiflix';
 import Section from './Section';
-import FeedbackOptions from './FeedbackOptions';
-import Notification from './Notification';
-import Statistics from './Statistics';
+import ContactForm from './ContactForm';
+import Contacts from './Contacts';
 
-class App extends Component {
+export default class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    contacts: [],
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  };
+  onGetDataForm = (data) => {
+    const hasName = this.state.contacts.some(it => it.name === data.name);
+    if (hasName) {
+      Notify.warning(`Contact "${data.name}" is already exist.`);
+      return;
+    }
 
-  countPositiveFeedbackPercentage = () => {
-    return Math.round(this.state.good / this.countTotalFeedback() * 100);
-  };
+    this.setState(p => ({
+      contacts: [...p.contacts, { ...data, id: nanoid() }]
+    }))
+  }
 
-  onLeaveFeedback = (feedbackType) => {
-    this.setState(prev => ({ [feedbackType]: prev[feedbackType] + 1 }));
-  };
+  deleteItem = (deletedId) => {
+    this.setState(p => ({
+      contacts: p.contacts.filter(({id}) => id !== deletedId)
+    }))
+  }
 
   render() {
-    const {good, neutral, bad} = this.state;
-    const total = this.countTotalFeedback();
-
+    const {contacts} = this.state;
     return (
-      <div className={s.container}>
-        <Section title='Please leave feedback'>
-          <FeedbackOptions
-            options={this.state}
-            onLeaveFeedback={this.onLeaveFeedback}
+      <div>
+        <Section title='Phonebook'>
+          <ContactForm
+            onSubmit={this.onGetDataForm}
           />
         </Section>
-
-        <Section title='Statistics'>
-          {!total
-            ? <Notification message='There is no feedback'/>
-            : <Statistics
-              good={good}
-              neutral={neutral}
-              bad={bad}
-              total={this.countTotalFeedback()}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
-            />}
+        <Section title='Contacts'>
+          <Contacts
+            contacts={contacts}
+            onClickDelete={this.deleteItem}
+          />
         </Section>
       </div>
     );
   }
 }
-
-export default App;

@@ -1,0 +1,20 @@
+.controlsContainer {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  
+  .control {
+    padding: 10px 50px 10px 50px;
+    border: none;
+    border-radius: 10px;
+  
+    text-transform: capitalize;
+    font-size: 20px;
+    font-weight: 600;
+  
+    cursor: pointer;
+  }

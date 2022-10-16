@@ -24,7 +24,8 @@ const FeedbackOptions = ({ handleFeedback, options }) => {
 
 FeedbackOptions.propTypes = {
   handleFeedback: PropTypes.func.isRequired,
-  options: PropTypes.array.isRequired,
+  // options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string.isRequired),
 };
 
 export default FeedbackOptions;

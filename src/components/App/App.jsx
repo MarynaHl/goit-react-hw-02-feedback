@@ -44,8 +44,11 @@ class App extends Component {
       <>
         <Section title="Please leave your feedback">
           <FeedbackOptions
+            // options={["good", "neutral", "bad"]}
+            // handleFeedback={handleFeedback.bind(this)}
+
             options={Object.keys(this.state)}
-            handleFeedback={this.handleFeedback.bind(this)}
+            handleFeedback={this.handleFeedback}
           />
         </Section>
 

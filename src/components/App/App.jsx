@@ -30,7 +30,7 @@ class App extends Component {
 
   render() {
     const {
-      handleFeedback,
+      // handleFeedback,
       state,
       countTotalFeedback,
       countPositiveFeedbackPercentage,

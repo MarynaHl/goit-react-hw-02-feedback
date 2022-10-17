@@ -1,15 +1,11 @@
-import React from "react";
+import PropTypes from 'prop-types'
 
-import { PropTypes } from "prop-types";
+const Notification = ({message}) => (
+    <span>{message}</span>
+)
 
-import styles from "./Notification.module.css";
-
-const Notification = ({ message }) => (
-  <div className={styles.notification}>{message}</div>
-);
+export default Notification
 
 Notification.propTypes = {
-  message: PropTypes.string.isRequired,
-};
-
-export default Notification;
+    message: PropTypes.string.isRequired,
+}
